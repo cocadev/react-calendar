@@ -1,32 +1,22 @@
 import React, { Component } from 'react';
-
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
-
 import axios from 'axios'
-
-
 import logo from './logo.svg';
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import './App.css';
-import events from './event'
 
 moment.locale('en-GB');
 const localizer = momentLocalizer(moment);
 
 class App extends Component {
 
-
-
     constructor(props) {
         super(props)
         this.state = {
-            cal_events: [
-                //State is updated via componentDidMount
-            ],
+            cal_events: [],
         }
-
     }
 
     convertDate = (date) => {
@@ -35,25 +25,24 @@ class App extends Component {
 
     componentDidMount() {
 
-
         axios.get('https://api.servicetitan.com/v1/jobs?serviceTitanApiKey=5bc9b910-1cb6-4e9e-a1ad-77d17b287ee5&Status=Scheduled&StartsAfter=07/19/2021')
             .then(response => {
-
+                console.log(response)
                 const appointments = response.data.data
-                .reduce((prev, { }, index) => {
-                  const {start, end, type} = response.data.data[index];
-                  prev.push({ 
-                    id: index,
-                    title: type.name,
-                    allDay: true,
-                    start: this.convertDate(start), 
-                    end: this.convertDate(end)
-                  })
-                  return prev
-                }, [])
+                    .reduce((prev, { }, index) => {
+                        const { start, end, type } = response.data.data[index];
+                        prev.push({
+                            id: index,
+                            title: type.name,
+                            allDay: true,
+                            start: this.convertDate(start),
+                            end: this.convertDate(end)
+                        })
+                        return prev
+                    }, [])
 
                 this.setState({
-                    cal_events:appointments
+                    cal_events: appointments
                 })
 
             })
@@ -78,8 +67,8 @@ class App extends Component {
                         localizer={localizer}
                         events={cal_events}
                         step={30}
-                        defaultView='week'
-                        views={['month','week','day']}
+                        defaultView='month'
+                        views={['month', 'week', 'day']}
                         defaultDate={new Date()}
                     />
                 </div>
